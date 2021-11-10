@@ -103,7 +103,7 @@ public class UtilisateurRessource {
 }
 
 @Data
-class RoleToUserForm {
+class  RoleToUserForm {
     private String mail;
     private String libelle;
 }

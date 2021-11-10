@@ -33,4 +33,9 @@ public class Poste {
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date updatedTime;
 
+    @PrePersist
+    private void onCreate() {
+        creationTime = new Date();
+        updatedTime = new Date();
+    }
 }

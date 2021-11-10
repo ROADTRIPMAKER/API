@@ -38,11 +38,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/signin/**", "/token/refresh/**").permitAll();
+        http.authorizeRequests().antMatchers("/signin/**", "/token/refresh/**", "/poste/**").permitAll();
         http.authorizeRequests().antMatchers(GET, "/users/**").hasAnyAuthority("ADMIN");
         http.authorizeRequests().antMatchers(POST, "/role/add/**").hasAnyAuthority("ADMIN");
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
+        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 

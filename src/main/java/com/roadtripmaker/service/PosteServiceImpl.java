@@ -34,4 +34,12 @@ public class PosteServiceImpl implements PosteService {
 
         return this.posteRepository.findAll();
     }
+
+    @Override public Boolean deletePoste(UUID uuid) {
+        log.info("Suppression du poste : {}", uuid);
+
+        this.posteRepository.deleteById(uuid);
+
+        return true;
+    }
 }

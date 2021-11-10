@@ -11,4 +11,6 @@ public interface PosteService {
     Poste getPoste(UUID uuid);
 
     List<Poste> getPostes();
+
+    Boolean deletePoste(UUID uuid);
 }

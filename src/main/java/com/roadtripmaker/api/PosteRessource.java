@@ -59,4 +59,17 @@ public class PosteRessource {
                         .build()
         );
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Reponse> deletePoste(@PathVariable("id") UUID uuid) {
+        return ResponseEntity.ok(
+                Reponse.builder()
+                        .timeStamp(now())
+                        .data(Map.of("suppression", posteService.deletePoste(uuid)))
+                        .message("Poste supprimé")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
 }

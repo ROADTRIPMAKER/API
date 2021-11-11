@@ -14,7 +14,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Poste {
+public class Post {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -32,7 +32,7 @@ public class Poste {
 
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date updatedTime;
-
+    
     @PrePersist
     private void onCreate() {
         creationTime = new Date();

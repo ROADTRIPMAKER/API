@@ -1,8 +1,8 @@
 package com.roadtripmaker.api;
 
-import com.roadtripmaker.domain.model.Poste;
+import com.roadtripmaker.domain.model.Post;
 import com.roadtripmaker.domain.model.Reponse;
-import com.roadtripmaker.service.PosteServiceImpl;
+import com.roadtripmaker.service.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,18 +16,18 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/poste")
+@RequestMapping("/post")
 @RequiredArgsConstructor
-public class PosteRessource {
-    private final PosteServiceImpl posteService;
+public class PostRessource {
+    private final PostServiceImpl postService;
 
     @PostMapping("/create")
-    public ResponseEntity<Reponse> createPoste(@RequestBody @Valid Poste poste) {
+    public ResponseEntity<Reponse> createPost(@RequestBody @Valid Post post) {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("poste", posteService.create(poste)))
-                        .message("Poste créé")
+                        .data(Map.of("post", postService.create(post)))
+                        .message("Post créé")
                         .status(CREATED)
                         .statusCode(CREATED.value())
                         .build()
@@ -35,12 +35,12 @@ public class PosteRessource {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Reponse> getPostes() {
+    public ResponseEntity<Reponse> getPosts() {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("postes", posteService.getPostes()))
-                        .message("Postes récupérés")
+                        .data(Map.of("posts", postService.getPosts()))
+                        .message("Posts récupérés")
                         .status(OK)
                         .statusCode(OK.value())
                         .build()
@@ -48,12 +48,12 @@ public class PosteRessource {
     }
 
     @GetMapping("/list/{id}")
-    public ResponseEntity<Reponse> getPoste(@PathVariable("id") UUID uuid) {
+    public ResponseEntity<Reponse> getPost(@PathVariable("id") UUID uuid) {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("postes", posteService.getPoste(uuid)))
-                        .message("Poste récupéré")
+                        .data(Map.of("post", postService.getPost(uuid)))
+                        .message("Post récupéré")
                         .status(OK)
                         .statusCode(OK.value())
                         .build()
@@ -61,12 +61,12 @@ public class PosteRessource {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Reponse> deletePoste(@PathVariable("id") UUID uuid) {
+    public ResponseEntity<Reponse> deletePost(@PathVariable("id") UUID uuid) {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("suppression", posteService.deletePoste(uuid)))
-                        .message("Poste supprimé")
+                        .data(Map.of("suppression", postService.deletePost(uuid)))
+                        .message("Post supprimé")
                         .status(OK)
                         .statusCode(OK.value())
                         .build()

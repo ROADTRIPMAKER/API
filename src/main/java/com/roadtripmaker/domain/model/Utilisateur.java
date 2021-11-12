@@ -1,4 +1,4 @@
-package com.roadtripmaker.domain;
+package com.roadtripmaker.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

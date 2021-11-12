@@ -1,7 +1,7 @@
 package com.roadtripmaker.service;
 
-import com.roadtripmaker.domain.Role;
-import com.roadtripmaker.domain.Utilisateur;
+import com.roadtripmaker.domain.model.Role;
+import com.roadtripmaker.domain.model.Utilisateur;
 
 import java.util.List;
 

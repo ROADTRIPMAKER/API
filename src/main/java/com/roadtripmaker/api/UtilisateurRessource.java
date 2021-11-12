@@ -5,8 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.roadtripmaker.domain.Role;
-import com.roadtripmaker.domain.Utilisateur;
+import com.roadtripmaker.domain.model.Role;
+import com.roadtripmaker.domain.model.Utilisateur;
 import com.roadtripmaker.service.UtilisateurService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -103,7 +103,7 @@ public class UtilisateurRessource {
 }
 
 @Data
-class RoleToUserForm {
+class  RoleToUserForm {
     private String mail;
     private String libelle;
 }

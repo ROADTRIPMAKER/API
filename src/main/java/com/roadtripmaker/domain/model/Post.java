@@ -22,7 +22,7 @@ public class Post {
     private UUID uuid;
 
     @NotEmpty(message = "Titre obligatoire")
-    private String titre;
+    private String title;
 
     @NotEmpty(message = "description obligatoire")
     private String description;

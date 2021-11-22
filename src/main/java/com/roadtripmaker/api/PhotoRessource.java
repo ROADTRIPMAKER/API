@@ -1,6 +1,6 @@
 package com.roadtripmaker.api;
 
-import com.roadtripmaker.domain.model.Reponse;
+import com.roadtripmaker.domain.model.Response;
 import com.roadtripmaker.service.PhotoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,9 @@ public class PhotoRessource {
     private final PhotoService photoService;
 
     @GetMapping("/list")
-    public ResponseEntity<Reponse> getPhotos() {
+    public ResponseEntity<Response> getPhotos() {
         return ResponseEntity.ok(
-                Reponse.builder()
+                Response.builder()
                         .timeStamp(now())
                         .data(Map.of("results", photoService.getPhotos()))
                         .message("Photos récupérées")
@@ -37,10 +37,10 @@ public class PhotoRessource {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Reponse> savePhoto(@RequestBody @Valid MultipartFile file
+    public ResponseEntity<Response> savePhoto(@RequestBody @Valid MultipartFile file
     ) throws IOException {
         return ResponseEntity.ok(
-                Reponse.builder()
+                Response.builder()
                         .timeStamp(now())
                         .data(Map.of("result", photoService.savePhoto(file)))
                         .message("photo créée")
@@ -51,9 +51,9 @@ public class PhotoRessource {
     }
 
     @GetMapping("/list/{id}")
-    public ResponseEntity<Reponse> getPhoto(@PathVariable("id") UUID uuid) {
+    public ResponseEntity<Response> getPhoto(@PathVariable("id") UUID uuid) {
         return ResponseEntity.ok(
-                Reponse.builder()
+                Response.builder()
                         .timeStamp(now())
                         .data(Map.of("result", photoService.getPhoto(uuid)))
                         .message("Photo récupérée")

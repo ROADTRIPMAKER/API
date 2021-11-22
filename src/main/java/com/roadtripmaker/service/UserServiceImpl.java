@@ -1,7 +1,7 @@
 package com.roadtripmaker.service;
 
+import com.roadtripmaker.domain.model.RoadUser;
 import com.roadtripmaker.domain.model.Role;
-import com.roadtripmaker.domain.model.User;
 import com.roadtripmaker.domain.repository.RoleRepository;
 import com.roadtripmaker.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +28,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User signUp(User user) {
-        log.info("Sauvegarde d'un nouvel utilisteur {} en base de données.", user.getMail());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public RoadUser signUp(RoadUser roadUser) {
+        log.info("Sauvegarde d'un nouvel utilisteur {} en base de données.", roadUser.getMail());
+        roadUser.setPassword(passwordEncoder.encode(roadUser.getPassword()));
 
-        return this.userRepository.save(user);
+        return this.userRepository.save(roadUser);
     }
 
     @Override
@@ -46,20 +46,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void assignRoleToAnUser(String mail, String nameRole) {
         log.info("Ajout du rôle {} à l'utilisateur {}", nameRole, mail);
 
-        User user = this.userRepository.findByMail(mail);
+        RoadUser roadUser = this.userRepository.findByMail(mail);
         Role role = this.roleRepository.findByLibelle(nameRole);
-        user.getRoles().add(role);
+        roadUser.getRoles().add(role);
     }
 
     @Override
-    public User getUser(String mail) {
+    public RoadUser getUser(String mail) {
         log.info("Recherche de l'utilisateur {}", mail);
 
         return this.userRepository.findByMail(mail);
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<RoadUser> getUsers() {
         log.info("Recherche de tous les utilisateurs");
 
         return this.userRepository.findAll();
@@ -67,9 +67,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
-        User user = userRepository.findByMail(mail);
+        RoadUser roadUser = userRepository.findByMail(mail);
 
-        if (user == null) {
+        if (roadUser == null) {
             log.error("L'utilisateur {} n'a pas été trouvé.", mail);
             throw new UsernameNotFoundException("L'utilisateur n'a pas été trouvé.");
         } else {
@@ -77,11 +77,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        user.getRoles().forEach(role -> {
+        roadUser.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getLibelle()));
         });
 
-        return new org.springframework.security.core.userdetails.User(user.getMail(), user.getPassword(),
+        return new org.springframework.security.core.userdetails.User(roadUser.getMail(), roadUser.getPassword(),
                 authorities);
     }
 }

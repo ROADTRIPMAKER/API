@@ -14,13 +14,12 @@ import java.util.Collection;
 import java.util.UUID;
 
 import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.GenerationType.AUTO;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class RoadUser {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")

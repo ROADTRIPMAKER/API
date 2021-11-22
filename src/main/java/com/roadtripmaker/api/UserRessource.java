@@ -5,8 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.roadtripmaker.domain.model.RoadUser;
 import com.roadtripmaker.domain.model.Role;
-import com.roadtripmaker.domain.model.User;
 import com.roadtripmaker.service.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -36,14 +36,14 @@ public class UserRessource {
     private final UserService userService;
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<RoadUser>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signUp(@RequestBody User user) {
+    public ResponseEntity<RoadUser> signUp(@RequestBody RoadUser roadUser) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/signup").toUriString());
-        return ResponseEntity.created(uri).body(userService.signUp(user));
+        return ResponseEntity.created(uri).body(userService.signUp(roadUser));
     }
 
     @PostMapping("/role")
@@ -71,12 +71,12 @@ public class UserRessource {
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
                 String mail = decodedJWT.getSubject();
-                User user = userService.getUser(mail);
+                RoadUser roadUser = userService.getUser(mail);
 
                 String accessToken = JWT.create().withSubject(mail)
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 600 * 1000))
                         .withIssuer(request.getRequestURI().toString())
-                        .withClaim("roles", user.getRoles()
+                        .withClaim("roles", roadUser.getRoles()
                                 .stream()
                                 .map(Role::getLibelle)
                                 .collect((toList())))

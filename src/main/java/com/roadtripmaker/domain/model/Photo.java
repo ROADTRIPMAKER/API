@@ -29,5 +29,4 @@ public class Photo {
 
     @Lob
     private byte[] data;
-
 }

@@ -1,18 +1,18 @@
 package com.roadtripmaker.service;
 
+import com.roadtripmaker.domain.model.RoadUser;
 import com.roadtripmaker.domain.model.Role;
-import com.roadtripmaker.domain.model.User;
 
 import java.util.List;
 
 public interface UserService {
-    User signUp(User user);
+    RoadUser signUp(RoadUser roadUser);
 
-    User getUser(String mail);
+    RoadUser getUser(String mail);
 
-    List<User> getUsers();
+    List<RoadUser> getUsers();
 
     Role addRole(Role role);
 
-    void assignRoleToAnUser(String mail, String nameRole²);
+    void assignRoleToAnUser(String mail, String nameRole);
 }

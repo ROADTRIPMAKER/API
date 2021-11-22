@@ -1,8 +1,8 @@
 package com.roadtripmaker;
 
 import com.roadtripmaker.domain.model.Post;
+import com.roadtripmaker.domain.model.RoadUser;
 import com.roadtripmaker.domain.model.Role;
-import com.roadtripmaker.domain.model.User;
 import com.roadtripmaker.domain.repository.PostRepository;
 import com.roadtripmaker.service.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -34,7 +34,7 @@ public class ApiApplication {
             userService.addRole(new Role(null, "ADMIN"));
 
             userService.signUp(
-                    new User(null, "Tiziano", "Ghisotti", "tiziano.ghisotti@gmail.com", "azerty", new ArrayList<>()));
+                    new RoadUser(null, "Tiziano", "Ghisotti", "tiziano.ghisotti@gmail.com", "azerty", new ArrayList<>()));
 
             userService.assignRoleToAnUser("tiziano.ghisotti@gmail.com", "ADMIN");
         };

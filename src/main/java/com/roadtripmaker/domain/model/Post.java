@@ -7,6 +7,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
@@ -32,10 +34,13 @@ public class Post {
 
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date updatedTime;
-    
+
     @PrePersist
     private void onCreate() {
         creationTime = new Date();
         updatedTime = new Date();
     }
+
+    @OneToMany
+    private Collection<Photo> photos = new ArrayList<>();
 }

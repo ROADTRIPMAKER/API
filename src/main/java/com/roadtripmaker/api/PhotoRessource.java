@@ -27,7 +27,7 @@ public class PhotoRessource {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("posts", photoService.getPhotos()))
+                        .data(Map.of("results", photoService.getPhotos()))
                         .message("Photos récupérées")
                         .status(OK)
                         .statusCode(OK.value())
@@ -42,7 +42,7 @@ public class PhotoRessource {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("photo", photoService.savePhoto(file)))
+                        .data(Map.of("result", photoService.savePhoto(file)))
                         .message("photo créée")
                         .status(CREATED)
                         .statusCode(CREATED.value())
@@ -55,7 +55,7 @@ public class PhotoRessource {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("post", photoService.getPhoto(uuid)))
+                        .data(Map.of("result", photoService.getPhoto(uuid)))
                         .message("Photo récupérée")
                         .status(OK)
                         .statusCode(OK.value())

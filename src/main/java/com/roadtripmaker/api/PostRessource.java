@@ -26,7 +26,7 @@ public class PostRessource {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("post", postService.create(post)))
+                        .data(Map.of("result", postService.create(post)))
                         .message("Post créé")
                         .status(CREATED)
                         .statusCode(CREATED.value())
@@ -39,7 +39,7 @@ public class PostRessource {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("posts", postService.getPosts()))
+                        .data(Map.of("results", postService.getPosts()))
                         .message("Posts récupérés")
                         .status(OK)
                         .statusCode(OK.value())
@@ -52,7 +52,7 @@ public class PostRessource {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("post", postService.getPost(uuid)))
+                        .data(Map.of("result", postService.getPost(uuid)))
                         .message("Post récupéré")
                         .status(OK)
                         .statusCode(OK.value())
@@ -65,7 +65,7 @@ public class PostRessource {
         return ResponseEntity.ok(
                 Reponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("suppression", postService.deletePost(uuid)))
+                        .data(Map.of("result", postService.deletePost(uuid)))
                         .message("Post supprimé")
                         .status(OK)
                         .statusCode(OK.value())

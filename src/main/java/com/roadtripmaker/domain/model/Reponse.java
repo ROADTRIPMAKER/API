@@ -1,5 +1,6 @@
 package com.roadtripmaker.domain.model;
 
+import com.auth0.jwt.interfaces.Header;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
@@ -21,5 +22,6 @@ public class Reponse {
     protected String message;
     protected String developperMessage;
     protected Map<?, ?> data;
+    protected Header header;
 
 }

@@ -22,6 +22,4 @@ public class Reponse {
     protected String message;
     protected String developperMessage;
     protected Map<?, ?> data;
-    protected Header header;
-
 }

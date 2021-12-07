@@ -53,7 +53,7 @@ public class GeodecodingImpl implements GeodecodingService {
                     final String placeId = geocodingResults[0].placeId;
                     final double latitude = geocodingResults[0].geometry.location.lat;
                     final double longitude = geocodingResults[0].geometry.location.lng;
-                    final Geodecoding geoLocation = new Geodecoding(latitude, longitude);
+                    final Geodecoding geoLocation = new Geodecoding(null, latitude, longitude);
                     log.info("Computed following coordinates using GeocodingApi.newRequest {}", geoLocation);
                     return Optional.of(geoLocation);
                 } else {

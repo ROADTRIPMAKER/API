@@ -1,7 +1,7 @@
 package com.roadtripmaker.api;
 
 import com.roadtripmaker.domain.model.Post;
-import com.roadtripmaker.domain.model.Reponse;
+import com.roadtripmaker.domain.model.Response;
 import com.roadtripmaker.service.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +22,11 @@ public class PostRessource {
     private final PostServiceImpl postService;
 
     @PostMapping("/create")
-    public ResponseEntity<Reponse> createPost(@RequestBody @Valid Post post) {
+    public ResponseEntity<Response> createPost(@RequestBody @Valid Post post) {
         return ResponseEntity.ok(
-                Reponse.builder()
+                Response.builder()
                         .timeStamp(now())
-                        .data(Map.of("post", postService.create(post)))
+                        .data(Map.of("result", postService.create(post)))
                         .message("Post créé")
                         .status(CREATED)
                         .statusCode(CREATED.value())
@@ -35,11 +35,11 @@ public class PostRessource {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Reponse> getPosts() {
+    public ResponseEntity<Response> getPosts() {
         return ResponseEntity.ok(
-                Reponse.builder()
+                Response.builder()
                         .timeStamp(now())
-                        .data(Map.of("posts", postService.getPosts()))
+                        .data(Map.of("results", postService.getPosts()))
                         .message("Posts récupérés")
                         .status(OK)
                         .statusCode(OK.value())
@@ -48,11 +48,11 @@ public class PostRessource {
     }
 
     @GetMapping("/list/{id}")
-    public ResponseEntity<Reponse> getPost(@PathVariable("id") UUID uuid) {
+    public ResponseEntity<Response> getPost(@PathVariable("id") UUID uuid) {
         return ResponseEntity.ok(
-                Reponse.builder()
+                Response.builder()
                         .timeStamp(now())
-                        .data(Map.of("post", postService.getPost(uuid)))
+                        .data(Map.of("result", postService.getPost(uuid)))
                         .message("Post récupéré")
                         .status(OK)
                         .statusCode(OK.value())
@@ -61,11 +61,11 @@ public class PostRessource {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Reponse> deletePost(@PathVariable("id") UUID uuid) {
+    public ResponseEntity<Response> deletePost(@PathVariable("id") UUID uuid) {
         return ResponseEntity.ok(
-                Reponse.builder()
+                Response.builder()
                         .timeStamp(now())
-                        .data(Map.of("suppression", postService.deletePost(uuid)))
+                        .data(Map.of("result", postService.deletePost(uuid)))
                         .message("Post supprimé")
                         .status(OK)
                         .statusCode(OK.value())

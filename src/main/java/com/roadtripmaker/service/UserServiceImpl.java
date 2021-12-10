@@ -1,9 +1,9 @@
 package com.roadtripmaker.service;
 
+import com.roadtripmaker.domain.model.RoadUser;
 import com.roadtripmaker.domain.model.Role;
-import com.roadtripmaker.domain.model.Utilisateur;
 import com.roadtripmaker.domain.repository.RoleRepository;
-import com.roadtripmaker.domain.repository.UtilisateurRepository;
+import com.roadtripmaker.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,17 +22,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UtilisateurServiceImpl implements UtilisateurService, UserDetailsService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     private final RoleRepository roleRepository;
-    private final UtilisateurRepository utilisateurRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Utilisateur signUp(Utilisateur utilisateur) {
-        log.info("Sauvegarde d'un nouvel utilisteur {} en base de données.", utilisateur.getMail());
-        utilisateur.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
+    public RoadUser signUp(RoadUser roadUser) {
+        log.info("Sauvegarde d'un nouvel utilisteur {} en base de données.", roadUser.getMail());
+        roadUser.setPassword(passwordEncoder.encode(roadUser.getPassword()));
 
-        return this.utilisateurRepository.save(utilisateur);
+        return this.userRepository.save(roadUser);
     }
 
     @Override
@@ -43,33 +43,33 @@ public class UtilisateurServiceImpl implements UtilisateurService, UserDetailsSe
     }
 
     @Override
-    public void assignRoleToAnUser(String mail, String libelle) {
-        log.info("Ajout du rôle {} à l'utilisateur {}", libelle, mail);
+    public void assignRoleToAnUser(String mail, String nameRole) {
+        log.info("Ajout du rôle {} à l'utilisateur {}", nameRole, mail);
 
-        Utilisateur utilisateur = this.utilisateurRepository.findByMail(mail);
-        Role role = this.roleRepository.findByLibelle(libelle);
-        utilisateur.getRoles().add(role);
+        RoadUser roadUser = this.userRepository.findByMail(mail);
+        Role role = this.roleRepository.findByLibelle(nameRole);
+        roadUser.getRoles().add(role);
     }
 
     @Override
-    public Utilisateur getUtilisateur(String mail) {
+    public RoadUser getUser(String mail) {
         log.info("Recherche de l'utilisateur {}", mail);
 
-        return this.utilisateurRepository.findByMail(mail);
+        return this.userRepository.findByMail(mail);
     }
 
     @Override
-    public List<Utilisateur> getUtilisateurs() {
+    public List<RoadUser> getUsers() {
         log.info("Recherche de tous les utilisateurs");
 
-        return this.utilisateurRepository.findAll();
+        return this.userRepository.findAll();
     }
 
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
-        Utilisateur utilisateur = utilisateurRepository.findByMail(mail);
+        RoadUser roadUser = userRepository.findByMail(mail);
 
-        if (utilisateur == null) {
+        if (roadUser == null) {
             log.error("L'utilisateur {} n'a pas été trouvé.", mail);
             throw new UsernameNotFoundException("L'utilisateur n'a pas été trouvé.");
         } else {
@@ -77,11 +77,11 @@ public class UtilisateurServiceImpl implements UtilisateurService, UserDetailsSe
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        utilisateur.getRoles().forEach(role -> {
+        roadUser.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getLibelle()));
         });
 
-        return new org.springframework.security.core.userdetails.User(utilisateur.getMail(), utilisateur.getMotDePasse(),
+        return new org.springframework.security.core.userdetails.User(roadUser.getMail(), roadUser.getPassword(),
                 authorities);
     }
 }

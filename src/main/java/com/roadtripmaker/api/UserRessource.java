@@ -5,9 +5,9 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.roadtripmaker.domain.model.RoadUser;
 import com.roadtripmaker.domain.model.Role;
-import com.roadtripmaker.domain.model.Utilisateur;
-import com.roadtripmaker.service.UtilisateurService;
+import com.roadtripmaker.service.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,30 +31,31 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
-public class UtilisateurRessource {
-    private final UtilisateurService utilisateurService;
+public class UserRessource {
+    //TODO Passer par la classe Reponse au maximum pour gérer cette classe.
+    private final UserService userService;
 
     @GetMapping("/users")
-    public ResponseEntity<List<Utilisateur>> getUsers() {
-        return ResponseEntity.ok().body(utilisateurService.getUtilisateurs());
+    public ResponseEntity<List<RoadUser>> getUsers() {
+        return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Utilisateur> signUp(@RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<RoadUser> signUp(@RequestBody RoadUser roadUser) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/signup").toUriString());
-        return ResponseEntity.created(uri).body(utilisateurService.signUp(utilisateur));
+        return ResponseEntity.created(uri).body(userService.signUp(roadUser));
     }
 
     @PostMapping("/role")
     public ResponseEntity<Role> addRole(@RequestBody Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/role").toUriString());
 
-        return ResponseEntity.created(uri).body(utilisateurService.addRole(role));
+        return ResponseEntity.created(uri).body(userService.addRole(role));
     }
 
     @PostMapping("/role/add")
     public ResponseEntity<?> assignRoleToAnUser(@RequestBody RoleToUserForm roleToUserForm) {
-        utilisateurService.assignRoleToAnUser(roleToUserForm.getMail(), roleToUserForm.getLibelle());
+        userService.assignRoleToAnUser(roleToUserForm.getMail(), roleToUserForm.getLibelle());
         return ResponseEntity.ok().build();
     }
 
@@ -70,12 +71,12 @@ public class UtilisateurRessource {
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
                 String mail = decodedJWT.getSubject();
-                Utilisateur utilisateur = utilisateurService.getUtilisateur(mail);
+                RoadUser roadUser = userService.getUser(mail);
 
                 String accessToken = JWT.create().withSubject(mail)
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 600 * 1000))
                         .withIssuer(request.getRequestURI().toString())
-                        .withClaim("roles", utilisateur.getRoles()
+                        .withClaim("roles", roadUser.getRoles()
                                 .stream()
                                 .map(Role::getLibelle)
                                 .collect((toList())))
@@ -103,7 +104,7 @@ public class UtilisateurRessource {
 }
 
 @Data
-class  RoleToUserForm {
+class RoleToUserForm {
     private String mail;
     private String libelle;
 }

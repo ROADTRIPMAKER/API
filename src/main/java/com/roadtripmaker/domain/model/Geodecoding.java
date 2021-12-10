@@ -14,10 +14,14 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Geodecoding {
+
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID uuid;
-    private String libelle;
+
+    private Double latitude;
+
+    private Double longitude;
 }

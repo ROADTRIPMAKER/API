@@ -13,7 +13,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @Data
 @SuperBuilder
 @JsonInclude(NON_NULL)
-public class Reponse {
+public class Response {
     protected LocalDateTime timeStamp;
     protected int statusCode;
     protected HttpStatus status;
@@ -21,5 +21,4 @@ public class Reponse {
     protected String message;
     protected String developperMessage;
     protected Map<?, ?> data;
-
 }

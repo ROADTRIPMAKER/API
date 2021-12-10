@@ -16,13 +16,21 @@ import java.util.Map;
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.OK;
 
-@RestController @RequestMapping("/google") @RequiredArgsConstructor public class GeodecodingRessource {
+@RestController
+@RequestMapping("/google")
+@RequiredArgsConstructor
+public class GeodecodingRessource {
     private final GeodecodingImpl geodecoding;
 
-    @GetMapping("/geodecoder") public ResponseEntity<Response> getCoordinates(@RequestBody @Valid Address address) {
+    @GetMapping("/geodecoder")
+    public ResponseEntity<Response> getCoordinates(@RequestBody @Valid Address address) {
         return ResponseEntity.ok(
-                Response.builder().timeStamp(now()).data(Map.of("results", geodecoding.computeGeoLocation(address)))
-                        .message("Position récupérées").status(OK).statusCode(OK.value()).build());
+                Response.builder()
+                        .timeStamp(now())
+                        .data(Map.of("results", geodecoding.computeGeoLocation(address)))
+                        .message("Position récupérées")
+                        .status(OK)
+                        .statusCode(OK.value()).build());
 
     }
 }

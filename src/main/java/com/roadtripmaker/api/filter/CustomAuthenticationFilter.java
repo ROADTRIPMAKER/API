@@ -52,7 +52,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         //TODO "secret" doit être encrypté puis decrypté puis envoyé ici via un fichier config non commit.
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-        String accessToken = JWT.create().withSubject(user.getUsername()).withExpiresAt(new Date(System.currentTimeMillis() + 10 * 600 * 1000))
+        String accessToken = JWT.create().withSubject(user.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 600 * 1000))
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities()
                         .stream()
@@ -60,7 +61,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                         .collect((toList())))
                 .sign(algorithm);
 
-        String refreshToken = JWT.create().withSubject(user.getUsername()).withExpiresAt(new Date(System.currentTimeMillis() + 30 * 600 * 1000))
+        String refreshToken = JWT.create().withSubject(user.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 600 * 1000))
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 

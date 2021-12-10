@@ -6,6 +6,7 @@ import com.google.maps.PlacesApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.PlacesSearchResponse;
+import com.roadtripmaker.domain.model.Address;
 import com.roadtripmaker.domain.model.Geodecoding;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,34 +20,25 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Service
-@RequiredArgsConstructor
-@Transactional
-@Slf4j
+@Service @RequiredArgsConstructor @Transactional @Slf4j
 public class GeodecodingImpl implements GeodecodingService {
     private GeoApiContext geoApiContext;
 
-    @Autowired
-    public GeodecodingImpl(@Value("${gmaps.api.key}") String apiKey) {
-        geoApiContext = new GeoApiContext.Builder().apiKey(apiKey)
-                .maxRetries(2)
-                .connectTimeout(10L, TimeUnit.SECONDS)
-                .build();
+    @Autowired public GeodecodingImpl(@Value("${gmaps.api.key}") String apiKey) {
+        geoApiContext = new GeoApiContext.Builder().apiKey(apiKey).maxRetries(2).connectTimeout(10L, TimeUnit.SECONDS).build();
     }
 
-    public Optional<Geodecoding> computeGeoLocation(String fullAddressLine) { //2
+    public Optional<Geodecoding> computeGeoLocation(Address address) {
         final PlacesSearchResponse placesSearchResponse;
         try {
-            placesSearchResponse = PlacesApi.textSearchQuery(geoApiContext,
-                    fullAddressLine).await();
-            log.info("Processing address line using PlacesApi.textSearchQuery {}", fullAddressLine);
+            placesSearchResponse = PlacesApi.textSearchQuery(geoApiContext, address.toString()).await();
+            log.info("Processing address line using PlacesApi.textSearchQuery {}", address.toString());
             if (placesSearchResponse != null && placesSearchResponse.results.length > 0) {
                 log.info("Obtained following predictions using PlacesApi.textSearchQuery {}",
                         Arrays.toString(placesSearchResponse.results));
                 final GeocodingResult[] geocodingResults = GeocodingApi.newRequest(geoApiContext)
-                        .place(placesSearchResponse.results[0].placeId)
-                        .await();
-                log.info("Processing address line using GeocodingApi.newRequest {}", fullAddressLine);
+                        .place(placesSearchResponse.results[0].placeId).await();
+                log.info("Processing address line using GeocodingApi.newRequest {}", address.toString());
                 if (geocodingResults != null && geocodingResults.length > 0) {
                     log.info("Obtained following geocoding results using GeocodingApi.newRequest {}",
                             Arrays.toString(geocodingResults));
@@ -57,13 +49,13 @@ public class GeodecodingImpl implements GeodecodingService {
                     log.info("Computed following coordinates using GeocodingApi.newRequest {}", geoLocation);
                     return Optional.of(geoLocation);
                 } else {
-                    log.warn("No coordinates found using GeocodingApi.newRequest {}", fullAddressLine);
+                    log.warn("No coordinates found using GeocodingApi.newRequest {}", address.toString());
                 }
             } else {
-                log.warn("No coordinates found using PlacesApi.textSearchQuery {}", fullAddressLine);
+                log.warn("No coordinates found using PlacesApi.textSearchQuery {}", address.toString());
             }
         } catch (ApiException | InterruptedException | IOException e) {
-            log.error("Encountered error [{}] using GoogleMapsApi for address {} : {}", e.getMessage(), fullAddressLine, e);
+            log.error("Encountered error [{}] using GoogleMapsApi for address {} : {}", e.getMessage(), address.toString(), e);
         }
 
         return Optional.empty();

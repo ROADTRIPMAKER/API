@@ -31,6 +31,7 @@ import java.util.UUID;
         String comma = "";
         StringBuilder sb = new StringBuilder();
 
+        //TODO Refacto en stream
         for (String checkNull : str) {
             if (checkNull != null) {
                 sb.append(comma);
@@ -38,7 +39,6 @@ import java.util.UUID;
                 comma = ", ";
             }
         }
-
         return sb.toString();
     }
 }

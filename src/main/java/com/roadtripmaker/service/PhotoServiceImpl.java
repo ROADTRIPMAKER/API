@@ -1,5 +1,6 @@
 package com.roadtripmaker.service;
 
+
 import com.roadtripmaker.domain.model.Photo;
 import com.roadtripmaker.domain.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;

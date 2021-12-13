@@ -8,6 +8,7 @@ import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.PlacesSearchResponse;
 import com.roadtripmaker.domain.model.Address;
 import com.roadtripmaker.domain.model.Geodecoding;
+import com.roadtripmaker.domain.repository.GeodecodingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,15 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Service @RequiredArgsConstructor @Transactional @Slf4j
-public class GeodecodingImpl implements GeodecodingService {
+@Service @RequiredArgsConstructor @Transactional @Slf4j public class GeodecodingImpl implements GeodecodingService {
     private GeoApiContext geoApiContext;
+    private final GeodecodingRepository geodecodingRepository;
 
-    @Autowired public GeodecodingImpl(@Value("${gmaps.api.key}") String apiKey) {
+
+    @Autowired public GeodecodingImpl(@Value("${gmaps.api.key}") String apiKey,
+            final GeodecodingRepository geodecodingRepository) {
         geoApiContext = new GeoApiContext.Builder().apiKey(apiKey).maxRetries(2).connectTimeout(10L, TimeUnit.SECONDS).build();
+        this.geodecodingRepository = geodecodingRepository;
     }
 
     public Optional<Geodecoding> computeGeoLocation(Address address) {
@@ -47,6 +51,7 @@ public class GeodecodingImpl implements GeodecodingService {
                     final double longitude = geocodingResults[0].geometry.location.lng;
                     final Geodecoding geoLocation = new Geodecoding(null, latitude, longitude);
                     log.info("Computed following coordinates using GeocodingApi.newRequest {}", geoLocation);
+                    geodecodingRepository.save(geoLocation);
                     return Optional.of(geoLocation);
                 } else {
                     log.warn("No coordinates found using GeocodingApi.newRequest {}", address.toString());
@@ -57,8 +62,6 @@ public class GeodecodingImpl implements GeodecodingService {
         } catch (ApiException | InterruptedException | IOException e) {
             log.error("Encountered error [{}] using GoogleMapsApi for address {} : {}", e.getMessage(), address.toString(), e);
         }
-
         return Optional.empty();
     }
-
 }

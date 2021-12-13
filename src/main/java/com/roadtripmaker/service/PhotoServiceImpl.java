@@ -1,5 +1,6 @@
 package com.roadtripmaker.service;
 
+
 import com.roadtripmaker.domain.model.Photo;
 import com.roadtripmaker.domain.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Slf4j
 public class PhotoServiceImpl implements PhotoService {
     private final PhotoRepository photoRepository;
+
 
     @Override
     public Photo savePhoto(MultipartFile file) throws IOException {

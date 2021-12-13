@@ -8,6 +8,7 @@ import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.PlacesSearchResponse;
 import com.roadtripmaker.domain.model.Address;
 import com.roadtripmaker.domain.model.Geodecoding;
+import com.roadtripmaker.domain.repository.AddressRepository;
 import com.roadtripmaker.domain.repository.GeodecodingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +25,13 @@ import java.util.concurrent.TimeUnit;
 @Service @RequiredArgsConstructor @Transactional @Slf4j public class GeodecodingImpl implements GeodecodingService {
     private GeoApiContext geoApiContext;
     private final GeodecodingRepository geodecodingRepository;
+    private final AddressRepository addressRepository;
 
-
-    @Autowired public GeodecodingImpl(@Value("${gmaps.api.key}") String apiKey,
-            final GeodecodingRepository geodecodingRepository) {
+    @Autowired public GeodecodingImpl(@Value("${gmaps.api.key}") String apiKey, final GeodecodingRepository geodecodingRepository,
+            final AddressRepository addressRepository) {
         geoApiContext = new GeoApiContext.Builder().apiKey(apiKey).maxRetries(2).connectTimeout(10L, TimeUnit.SECONDS).build();
         this.geodecodingRepository = geodecodingRepository;
+        this.addressRepository = addressRepository;
     }
 
     public Optional<Geodecoding> computeGeoLocation(Address address) {
@@ -51,7 +53,9 @@ import java.util.concurrent.TimeUnit;
                     final double longitude = geocodingResults[0].geometry.location.lng;
                     final Geodecoding geoLocation = new Geodecoding(null, latitude, longitude);
                     log.info("Computed following coordinates using GeocodingApi.newRequest {}", geoLocation);
+                    addressRepository.save(address);
                     geodecodingRepository.save(geoLocation);
+
                     return Optional.of(geoLocation);
                 } else {
                     log.warn("No coordinates found using GeocodingApi.newRequest {}", address.toString());

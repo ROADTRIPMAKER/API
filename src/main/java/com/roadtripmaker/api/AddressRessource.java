@@ -24,5 +24,4 @@ import static org.springframework.http.HttpStatus.CREATED;
         return ResponseEntity.ok(Response.builder().timeStamp(now()).data(Map.of("result", addressService.saveAddress(address)))
                 .message("adresse créée").status(CREATED).statusCode(CREATED.value()).build());
     }
-
 }

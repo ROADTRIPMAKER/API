@@ -21,7 +21,6 @@ import java.util.UUID;
 public class PhotoServiceImpl implements PhotoService {
     private final PhotoRepository photoRepository;
 
-
     @Override
     public Photo savePhoto(MultipartFile file) throws IOException {
         Photo photo = new Photo();

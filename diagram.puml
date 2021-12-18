@@ -281,9 +281,6 @@ package service {
 
 
 }
-  class ApiApplication {
-   }
-
   interface PasswordEncoder {
   }
 

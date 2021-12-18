@@ -43,4 +43,7 @@ public class Post {
 
     @OneToMany
     private Collection<Photo> photos = new ArrayList<>();
+
+    @ManyToOne
+    private Address address;
 }

@@ -2,7 +2,8 @@ package com.roadtripmaker.api;
 
 import com.roadtripmaker.domain.model.Address;
 import com.roadtripmaker.domain.model.Response;
-import com.roadtripmaker.service.GeodecodingImpl;
+import com.roadtripmaker.service.GeodecodingService;
+import com.roadtripmaker.service.GeodecodingServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController @RequestMapping("/address") @RequiredArgsConstructor public class AddressRessource {
-    private final GeodecodingImpl geodecoding;
+    private final GeodecodingService geodecoding;
 
     @GetMapping("/save") public ResponseEntity<Response> getCoordinates(@RequestBody @Valid Address address) {
         return ResponseEntity.ok(

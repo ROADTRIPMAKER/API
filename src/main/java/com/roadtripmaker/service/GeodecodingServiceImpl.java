@@ -22,12 +22,12 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Service @RequiredArgsConstructor @Transactional @Slf4j public class GeodecodingImpl implements GeodecodingService {
+@Service @RequiredArgsConstructor @Transactional @Slf4j public class GeodecodingServiceImpl implements GeodecodingService {
     private GeoApiContext geoApiContext;
     private final GeodecodingRepository geodecodingRepository;
     private final AddressRepository addressRepository;
 
-    @Autowired public GeodecodingImpl(@Value("${gmaps.api.key}") String apiKey, final GeodecodingRepository geodecodingRepository,
+    @Autowired public GeodecodingServiceImpl(@Value("${gmaps.api.key}") String apiKey, final GeodecodingRepository geodecodingRepository,
             final AddressRepository addressRepository) {
         geoApiContext = new GeoApiContext.Builder().apiKey(apiKey).maxRetries(2).connectTimeout(10L, TimeUnit.SECONDS).build();
         this.geodecodingRepository = geodecodingRepository;

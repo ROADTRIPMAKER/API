@@ -2,6 +2,7 @@ package com.roadtripmaker.api;
 
 import com.roadtripmaker.domain.model.Post;
 import com.roadtripmaker.domain.model.Response;
+import com.roadtripmaker.service.PostService;
 import com.roadtripmaker.service.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostRessource {
-    private final PostServiceImpl postService;
+    private final PostService postService;
 
     @PostMapping("/create")
     public ResponseEntity<Response> createPost(@RequestBody @Valid Post post) {

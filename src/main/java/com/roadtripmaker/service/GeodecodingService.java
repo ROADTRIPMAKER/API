@@ -6,5 +6,5 @@ import com.roadtripmaker.domain.model.Geodecoding;
 import java.util.Optional;
 
 public interface GeodecodingService {
-    Optional<Geodecoding> computeGeoLocation(Address address);
+    Geodecoding computeGeoLocation(Address address);
 }

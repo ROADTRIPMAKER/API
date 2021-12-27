@@ -27,14 +27,15 @@ import java.util.concurrent.TimeUnit;
     private final GeodecodingRepository geodecodingRepository;
     private final AddressRepository addressRepository;
 
-    @Autowired public GeodecodingServiceImpl(@Value("${gmaps.api.key}") String apiKey, final GeodecodingRepository geodecodingRepository,
+    @Autowired public GeodecodingServiceImpl(@Value("${gmaps.api.key}") String apiKey,
+            final GeodecodingRepository geodecodingRepository,
             final AddressRepository addressRepository) {
         geoApiContext = new GeoApiContext.Builder().apiKey(apiKey).maxRetries(2).connectTimeout(10L, TimeUnit.SECONDS).build();
         this.geodecodingRepository = geodecodingRepository;
         this.addressRepository = addressRepository;
     }
 
-    public Optional<Geodecoding> computeGeoLocation(Address address) {
+    public Geodecoding computeGeoLocation(Address address) {
         final PlacesSearchResponse placesSearchResponse;
         try {
             placesSearchResponse = PlacesApi.textSearchQuery(geoApiContext, address.toString()).await();
@@ -53,10 +54,7 @@ import java.util.concurrent.TimeUnit;
                     final double longitude = geocodingResults[0].geometry.location.lng;
                     final Geodecoding geoLocation = new Geodecoding(null, latitude, longitude);
                     log.info("Computed following coordinates using GeocodingApi.newRequest {}", geoLocation);
-                    addressRepository.save(address);
-                    geodecodingRepository.save(geoLocation);
-
-                    return Optional.of(geoLocation);
+                    return geodecodingRepository.save(geoLocation);
                 } else {
                     log.warn("No coordinates found using GeocodingApi.newRequest {}", address.toString());
                 }
@@ -66,6 +64,6 @@ import java.util.concurrent.TimeUnit;
         } catch (ApiException | InterruptedException | IOException e) {
             log.error("Encountered error [{}] using GoogleMapsApi for address {} : {}", e.getMessage(), address.toString(), e);
         }
-        return Optional.empty();
+        return null;
     }
 }

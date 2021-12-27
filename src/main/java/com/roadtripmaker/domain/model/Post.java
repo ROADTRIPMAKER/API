@@ -41,9 +41,12 @@ public class Post {
         updatedTime = new Date();
     }
 
-    @OneToMany
-    private Collection<Photo> photos = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    private Photo photo;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Address address;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Geodecoding geodecoding;
 }

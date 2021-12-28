@@ -1,6 +1,5 @@
 package com.roadtripmaker.service;
 
-
 import com.roadtripmaker.domain.model.Photo;
 import com.roadtripmaker.domain.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +34,10 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public Photo getPhoto(UUID uuid) {
-        log.info("Recherche de la photo : {}", uuid);
+    public Photo getPhoto(String name) {
+        log.info("Recherche de la photo : {}", name);
 
-        return this.photoRepository.findByUuid(uuid);
+        return this.photoRepository.findByName(name);
     }
 
     @Override

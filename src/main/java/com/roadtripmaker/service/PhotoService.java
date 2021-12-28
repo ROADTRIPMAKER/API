@@ -11,7 +11,7 @@ public interface PhotoService {
 
     Photo savePhoto(MultipartFile file) throws IOException;
 
-    Photo getPhoto(UUID uuid);
+    Photo getPhoto(String name);
 
     List<Photo> getPhotos();
 }

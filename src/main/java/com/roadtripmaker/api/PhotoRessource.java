@@ -50,12 +50,12 @@ public class PhotoRessource {
         );
     }
 
-    @GetMapping("/list/{id}")
-    public ResponseEntity<Response> getPhoto(@PathVariable("id") UUID uuid) {
+    @GetMapping("/list/{name}")
+    public ResponseEntity<Response> getPhoto(@PathVariable("name") String name) {
         return ResponseEntity.ok(
                 Response.builder()
                         .timeStamp(now())
-                        .data(Map.of("result", photoService.getPhoto(uuid)))
+                        .data(Map.of("result", photoService.getPhoto(name)))
                         .message("Photo récupérée")
                         .status(OK)
                         .statusCode(OK.value())

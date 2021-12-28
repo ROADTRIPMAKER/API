@@ -1,0 +1,341 @@
+@startuml
+!include style/commons.style
+
+package api{
+    package filter {
+        class CustomAuthenticationFilter {
+            +this(): CustomAuthenticationFilter
+
+            +attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication
+            # successfulAuthentication(request: HttpServletRequest, response: HttpServletResponse): void
+        }
+
+        class CustomAuthorizationFilter {
+            +this(): CustomAuthorizationFilter
+
+            # doFilterInternal(request: HttpServletRequest, response: HttpServletResponse): void
+        }
+    }
+
+    class AddressRessource {
+        + this(): AddressRessource
+        + getCoordinates(address: Address): ResponseEntity<Response>
+    }
+
+    class PhotoRessource {
+        + this(): PhotoRessource
+
+        + getPhotos(): ResponseEntity<Response>
+        + savePhoto(file: MultipartFile): ResponseEntity<Response>
+        + getPhoto(uuid: UUID): ResponseEntity<Response>
+    }
+
+    class PostRessource {
+        + this(): PostRessource
+
+        + createPost(post: Post): ResponseEntity<Response>
+        + getPosts(): ResponseEntity<Response>
+        + getPost(uuid: UUID): ResponseEntity<Response>
+        + deletePost(uuid: UUID): ResponseEntity<Response>
+    }
+
+    class UserRessource {
+        + this(): UserRessource
+
+        + getUsers(): ResponseEntity<List<RoadUser>
+        + signUp(roadUser: RoadUser): ResponseEntity<RoadUser>
+        + addRole(role: Role): ResponseEntity<Role>
+        + assignRoleToAnUser(roleToUserForm: RoleToUserForm): ResponseEntity<?>
+        + refreshToken(request: HttpServletRequest, response: HttpServletResponse): void
+    }
+
+    class RoleToUserForm <<Data>> {
+        - mail: String
+        - libelle: String
+
+        + this(): RoleToUserForm
+    }
+}
+
+package domain {
+    package model {
+        class Address <<Model>> #TECHNOLOGY {
+            - uuid: UUID
+            - place: String
+            - country: String
+            - additionalAddress: String
+            - city: String
+            - zip: String
+
+            + this(): Address
+            + getUuid(): UUID
+            + setUuid(uuid: UUID): void
+            + getPlace(): String
+            + setPlace(place: String): void
+            + getCountry(): String
+            + setCountry(country: String): void
+            + getAdditionalAddress():  String
+            + setAdditionalAddress(additionalAddress: String): void
+            + getCity(): String
+            + setCity(city: String): void
+            + getZip(): String
+            + setZip(zip: String): void
+        }
+
+        class Geodecoding <<Model>> #TECHNOLOGY {
+            - uuid: UUID
+            - latitude: Double
+            - longitude: Double
+
+            + this(): Geodecoding
+            + getUuid(): UUID
+            + setUuid(uuid: UUID): void
+            + getLatitude(): Double
+            + setLatitude(latitude: Double): void
+            + getLongitude(): Double
+            + setLongitude(longitude: Double): void
+        }
+
+        class Photo <<Model>> #TECHNOLOGY {
+            - uuid: UUID
+            - name: String
+            - size: Long
+            - contentType: String
+            - data: Byte[]
+
+            + this()
+            + getUuid(): UUID
+            + setUuid(uuid: UUID): void
+            + getName(): String
+            + setName()
+            + getSize(): Long
+            + setSize(size: Long): void
+            + getContentType(): String
+            + setContentType(contentType: String): void
+            + getData(): Byte[]
+            + setData(data: Byte[]): void
+        }
+
+        class Post <<Model>> #TECHNOLOGY {
+            - uuid: UUID
+            - title: String
+            - description: String
+            - creationTime: Date
+            - updatedTime: Date
+
+            + this(): Post
+            - onCreate(): void
+            + getUuid(): UUID
+            + setUuid(uuid: UUID): void
+            + getTitle(): String
+            + setTitle(title: String): void
+            + getDescription(): String
+            + setDescription(description: String): void
+            + getCreationTime(): Date
+            + setCreationTime(creationTime: Date): void
+            + getUpdatedTime(): Date
+            + setUpdatedTime(): void
+        }
+
+        class Response <<Builder>> #TECHNOLOGY {
+            # timeStamp: LocalDateTime
+            # statusCode: int
+            # status: HttpStatus
+            # reason: String
+            # message: String
+            # developerMessage: String
+            # data: Map<?, ?>
+        }
+
+        class RoadUser <<Model>> #TECHNOLOGY {
+            - uuid: UUID
+            - name: String
+            - lastname: String
+            - mail: String
+            - password: String
+
+            +this(): RoadUser
+             + getUuid(): UUID
+             + setUuid(uuid: UUID): void
+             + getName(): String
+             + setName(name: String): void
+             + getLastname(): String
+             + setLastName(name: String): void
+             + getMail(): String
+             + setMail(mail: String): void
+             + getPassword(): String
+             + setPassword(password: String): void
+        }
+
+        class Role <<Model>> #TECHNOLOGY {
+            - uuid: UUID
+            - libelle: String
+
+            + this(): Role
+            + getUuid(): UUID
+            + setUuid(uuid: UUID): void
+            + getLibelle(): String
+            + setLibelle(libelle: String): void
+        }
+
+          Role "*roles"<--* RoadUser
+          Post "*posts"<--* RoadUser
+          Photo "*photos"<--* Post
+          Address "-address"<--* Post
+          Geodecoding "-geodecoding"<--* Address
+    }
+
+    package repository {
+        interface AddressRepository <<JPA, DAO>> #TECHNOLOGY {
+            findByUuid(uuid: UUID): Address
+        }
+
+        interface GeodecodingRepository <<JPA, DAO>> #TECHNOLOGY {
+            findByUuid(uuid: UUID): Geodecoding
+        }
+
+        interface PhotoRepository <<JPA, DAO>> #TECHNOLOGY {
+            findByUuid(uuid: UUID): Photo
+        }
+
+        interface PostRepository <<JPA, DAO>> #TECHNOLOGY {
+            findByUuid(uuid: UUID): Post
+        }
+
+        interface RoleRepository <<JPA, DAO>> #TECHNOLOGY {
+            findByLibelle(libelle: String): Role
+        }
+
+        interface UserRepository <<JPA, DAO>> #TECHNOLOGY {
+            findByMail(mail: String): RoadUser
+        }
+    }
+}
+
+package security {
+    class SecurityConfig {
+        +this(): SecurityConfig
+        # configure(auth: AuthenticationManagerBuilder): void
+        # configure(http: HttpSecurity): void
+        + authenticationManagerBean(): AuthenticationManager
+        + corsFilter(): CorsFilter
+    }
+}
+
+package service {
+   interface GeodecodingService {
+        computeGeoLocation(address: Address): Optional<Geodecoding>
+   }
+
+   interface PhotoService {
+        savePhoto(file: MultipartFile): Photo
+        getPhoto(uuid: UUID): Photo
+        getPhotos(): List<Photo>
+   }
+
+   interface PostService {
+        create(post: Post): Post
+        getPost(uuid: UUID): Post
+        getPosts(): List<Post>
+        deletePost(uuid: UUID): Boolean
+   }
+
+   interface UserService {
+        signUp(roadUser: RoadUser): RoadUser
+        getUser(mail: String): RoadUser
+        getUsers(): List<RoadUser>
+        addRole(role: Role): Role
+        assignRoleToAnUser(mail: String, nameRole: String): void
+   }
+
+   class GeodecodingServiceImpl <<Service>> implements GeodecodingService {
+        + this(): GeodecodingServiceImpl
+        + computeGeoLocation(address: Address): Optional<Geodecoding>
+   }
+
+   class PhotoServiceImpl <<Service>> implements PhotoService {
+        + this(): PhotoServiceImpl
+        + savePhoto(file: MultipartFile): Photo
+        + getPhoto(uuid: UUID): Photo
+        + getPhotos(): List<Photo>
+   }
+
+   class PostServiceImpl <<Service>> implements PostService {
+        + this(): PostServiceImpl
+        + create(post: Post): Post
+        + getPost(uuid: UUID): Post
+        + getPosts(): List<Post>
+        + deletePost(uuid: UUID): Boolean
+   }
+
+   class UserServiceImpl <<Service>> implements UserService {
+        + this(): UserServiceImpl
+
+        + signUp(roadUser: RoadUser): RoadUser
+        + addRole(role: Role): Role
+        + assignRoleToAnUser(mail: String, nameRole: String): void
+        + getUser(mail: String): RoadUser
+        + getUsers(): List<RoadUser>
+        + loadUserByUsername(mail: String): UserDetails
+   }
+
+
+}
+  interface PasswordEncoder {
+  }
+
+  abstract class WebSecurityConfigurerAdapter {
+  }
+
+  interface UserDetailsService {
+  }
+
+  class UsernamePasswordAuthenticationFilter {
+  }
+
+  abstract class OncePerRequestFilter {
+  }
+
+  interface AuthenticationManager {
+  }
+
+  interface JpaRepository {
+  }
+
+  GeoApiContext "-geoApiContext" <--* GeodecodingServiceImpl
+  GeodecodingRepository "-geodecodingRepository" <--* GeodecodingServiceImpl
+  AddressRepository "-addressRepository" <--* GeodecodingServiceImpl
+  BCryptPasswordEncoder "-bCryptPasswordEncoder" <--* SecurityConfig
+  UserDetailsService "-userDetailsService" <--* SecurityConfig
+  WebSecurityConfigurerAdapter <|--- SecurityConfig
+  PhotoRepository "-photoRepository" <--* PhotoServiceImpl
+  PostRepository "-postRepository" <--* PostServiceImpl
+  RoleRepository "-roleRepository" <--* UserServiceImpl
+  UserRepository "-userRepository" <--* UserServiceImpl
+  PasswordEncoder "-passwordEncoder" <--* UserServiceImpl
+  GeodecodingService "-geodecoding" <--* AddressRessource
+  PhotoService "-photoService" <--* PhotoRessource
+  PostService "-postService" <--* PostRessource
+  UserService "-userService" <--* UserRessource
+  AuthenticationManager "-authenticationManager" <--* CustomAuthenticationFilter
+
+   UsernamePasswordAuthenticationFilter <|--- CustomAuthenticationFilter
+   OncePerRequestFilter <|--- CustomAuthorizationFilter
+
+   JpaRepository <|--- RoleRepository
+   JpaRepository <|--- UserRepository
+   JpaRepository <|--- AddressRepository
+   JpaRepository <|--- PostRepository
+   JpaRepository <|--- PhotoRepository
+
+   RoadUser --> UserServiceImpl
+   Role --> UserServiceImpl
+   Geodecoding --> GeodecodingServiceImpl
+   Address --> GeodecodingServiceImpl
+   Photo --> PhotoServiceImpl
+   Post --> PostService
+
+   Response --> PostRessource
+   Response --> AddressRessource
+   Response --> Photo
+@enduml

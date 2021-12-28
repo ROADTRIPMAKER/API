@@ -28,7 +28,6 @@ public class RoadUser {
 
     @ManyToMany(fetch = EAGER)
     private Collection<Role> roles = new ArrayList<>();
-
-    @OneToMany
-    private Collection<Post> posts = new ArrayList<>();
+    //  @OneToMany
+    // private Collection<Post> posts = new ArrayList<>();
 }
